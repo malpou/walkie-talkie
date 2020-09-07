@@ -1,4 +1,4 @@
-# walkie-talkie
+# Chat Rooms
 
 ## Project setup
 ```
