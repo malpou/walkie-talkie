@@ -24,7 +24,7 @@
 
                 <hr>
                 <button 
-                    :disabled="!newMessageText || loading"
+                    :disabled="(!newMessageText && !newAudio) || loading"
                     class="button"
                     :class="{ 'is-loading': loading }"
                     type="text"
