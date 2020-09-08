@@ -1,8 +1,6 @@
 <template>
   <main>
-    <portal to="header">
-        Welcome to room: {{ chatId }}
-    </portal>
+    <portal to="header"> Welcome to room: {{ chatId }} </portal>
     <user>
       <template #user="{ user }">
         <ul v-if="areThereMessages">
@@ -19,21 +17,31 @@
             areThereMessages ? "" : ", to start the chat"
           }}:
         </label>
+
         <v-text-field
           v-on:keyup.enter="addMessage(user.uid)"
           v-model="newMessageText"
           outlined
-        />
-        <v-flex x1 class="pt-3">
-    <v-btn
-          :disabled="(!newMessageText && !newAudio) || loading"
-          :loading="loading"
-          color="success"
-          type="text"
-          @click="addMessage(user.uid)"
+          filled
+          dense
+          append-icon="mdi-ballot-recount-outline"
+          class="mr-"
         >
-          Send
-        </v-btn></v-flex>
+          <template v-slot:append>
+            <v-btn
+            :disabled="(!newMessageText && !newAudio) || loading"
+            :loading="loading"
+            color="success"
+            type="text"
+            class="mb-2"
+            @click="addMessage(user.uid)"
+          >
+            Send
+          </v-btn>
+          </template>
+        </v-text-field>
+
+
         <h5>Record Audio</h5>
 
         <div class="my-2">
@@ -81,12 +89,12 @@ export default {
   },
   firestore() {
     return {
-      messages: this.messagesCollection.orderBy("createdAt").limitToLast(10),
+      messages: this.messagesCollection.orderBy("createdAt").limitToLast(5),
     };
   },
   methods: {
     async addMessage(uid) {
-      if ((this.newMessageText && this.newAudio) || !this.loading) {
+      if ((this.newMessageText || this.newAudio) && !this.loading) {
         this.loading = true;
 
         let audioURL = null;
