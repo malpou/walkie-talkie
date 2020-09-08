@@ -1,48 +1,52 @@
 <template>
-    <div>
-        <v-row>
-                <!--v-label v-if="chats.length != 0">{{ chats.length == 1 ? 'Chat Room' : 'Chat Rooms' }}</v-label-->
-                <v-btn text large color="primary" @click="createChatRoom()">Create New Chat Room</v-btn>
-        </v-row>
-        
-        <v-row v-for="chat of chats" :key="chat.id">
-            <v-chip class="ma-2">
-                <router-link :to="{ name: 'chat', params: { id: chat.id } }">
+  <v-content>
+    <v-card class="mx-auto" max-width="300" tile>
+      <v-list flat>
+        <v-subheader><v-btn text large color="primary" @click="createChatRoom()"
+        >Create New Chat Room</v-btn
+      ></v-subheader>
+        <v-list-item-group v-model="chats" color="primary">
+          <v-list-item v-for="chat in chats" :key="chat.id">
+            <v-list-item-content @click="$router.push(`chats/${chat.id}`)">
+              <v-list-item-title>
                     {{ chat.id }}
-                </router-link>
-            </v-chip>
-        </v-row>
-    </div>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-card>
+  </v-content>
 </template>
 
 <script>
-import firebase from 'firebase';
-import { db } from '../firebase';
+import firebase from "firebase";
+import { db } from "../firebase";
 
 export default {
-    data() {
-        return {
-            chats: [],
-        };
+  data() {
+    return {
+      chats: [],
+    };
+  },
+  firestore() {
+    return {
+      chats: db
+        .collection("chats")
+        .where("owner", "==", this.uid)
+        .orderBy("createdAt"),
+    };
+  },
+  methods: {
+    async createChatRoom() {
+      const newChat = await db.collection("chats").add({
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        owner: this.uid,
+        members: [this.uid],
+      });
+      console.log(newChat);
     },
-    firestore() {
-        return {
-            chats: db
-                .collection('chats')
-                .where('owner', '==', this.uid)
-                .orderBy('createdAt'),
-        };
-    },
-    methods: {
-        async createChatRoom() {
-            const newChat = await db.collection('chats').add({
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                owner: this.uid,
-                members: [this.uid],
-            });
-            console.log(newChat);
-        },
-    },
-    props: ['uid'],
+  },
+  props: ["uid"],
 };
 </script>

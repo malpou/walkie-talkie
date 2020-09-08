@@ -1,9 +1,11 @@
 <template>
   <div>
-    <p>Logged in as {{ user.uid }}</p>
-
-    <button class="button" @click="auth.signOut()">Sign Out</button>
-    <hr>
+    <portal to="header">
+      <div class="m-2">
+        Logged in as {{ user.uid }}
+        <i class="fas fa-sign-out-alt" @click="auth.signOut()"></i>
+      </div>
+    </portal>
   </div>
 </template>
 
@@ -12,7 +14,9 @@ import { auth } from "../firebase";
 
 export default {
   name: "UserProfile",
-  data() { return { auth } },
-  props: ['user']
-}
+  data() {
+    return { auth };
+  },
+  props: ["user"],
+};
 </script>

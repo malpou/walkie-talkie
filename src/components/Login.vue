@@ -1,70 +1,116 @@
 <template>
-    <aside>
-        <h3>Sign in Anonymously</h3>
-        <button class="button" @click="auth.signInAnonymously()">
-            Sign In
-        </button>
+  <v-container>
+    <v-row>
+      <v-col>
+        <v-card class="mx-auto">
+          <v-list-item two-line>
+            <v-list-item-content>
+              <div class="overline mb-4">Sign in Anonymously</div>
+              <v-list-item
+                ><v-btn @click="auth.signInAnonymously()">
+                  Sign In
+                </v-btn>
+              </v-list-item>
+            </v-list-item-content>
+          </v-list-item>
+        </v-card>
+      </v-col>
 
-        <hr>
-
-        <div v-if="newUser">
-            <h3>Sign Up for a New Account</h3>
-            <a href="#" @click="newUser = false">Returning User</a>
-        </div>
-
-        <div v-else>
-            <h3>Sign In with Email</h3>
-            <a href="#" @click="newUser = true">New User?</a>
-        </div>
-
-        <label for="email">Email</label>
-        <input v-model="email" placeholder="mail@domain.com" type="email" class="input" />
-
-        <label for="password">Password</label>
-        <input v-model="password" placeholder="••••••••" type="password" class="input" />
-        <br /> <br />
-        <button class="button" :class="{ 'is-loading': loading }" @click="signInOrCreateUser()">
-            {{ newUser ? 'Sign Up' : 'Login' }}
-        </button>
-
-		<p class="has-text-danger" v-if="errorMessage">{{ errorMessage }}</p>
-
-    </aside>
+      <v-col>
+        <v-card color="mx-auto">
+          <v-list-item three-line>
+            <v-list-item-content>
+              <div class="overline mb-4">
+                {{
+                  newUser ? "Sign Up for a New Account" : "Sign In with Email"
+                }}
+              </div>
+              <v-list-item three-line>
+                <v-list-item-content>
+                  <v-list-item>
+                    <v-switch v-model="newUser" :label="`New User?`"></v-switch>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-text-field
+                      v-model="email"
+                      label="Email"
+                      placeholder="mail@domain.com"
+                      type="email"
+                      class="input"
+                      outlined
+                    />
+                  </v-list-item>
+                  <v-list-item>
+                    <v-text-field
+                      v-model="password"
+                      label="Password"
+                      placeholder="••••••••"
+                      type="password"
+                      class="input"
+                      outlined
+                    />
+                  </v-list-item>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-btn
+                  :loading="loading"
+                  :disabled="loading"
+                  @click="signInOrCreateUser()"
+                >
+                  {{ newUser ? "Sign Up" : "Login" }}
+                </v-btn>
+              </v-list-item>
+              <v-list-item>
+                <v-alert
+                  v-if="errorMessage"
+                  border="left"
+                  color="red lighten-2"
+                  dark
+                >
+                  {{ errorMessage }}
+                </v-alert>
+              </v-list-item>
+            </v-list-item-content>
+          </v-list-item>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import { auth } from '../firebase';
+import { auth } from "../firebase";
 
 export default {
-    name: 'Login',
-    data() {
-        return {
-            auth,
-            newUser: false,
-            email: '',
-            password: '',
-			loading: false,
-			errorMessage: '',
-        };
-    },
-    methods: {
-        async signInOrCreateUser() {
-			this.loading = true;
-			this.errorMessage = '';
+  name: "Login",
+  data() {
+    return {
+      auth,
+      newUser: false,
+      email: "",
+      password: "",
+      loading: false,
+      errorMessage: "",
+    };
+  },
+  methods: {
+    async signInOrCreateUser() {
+      this.loading = true;
+      this.errorMessage = "";
 
-			try {
-				if (this.newUser) {
-                await auth.createUserWithEmailAndPassword(this.email, this.password);
-            } else {
-                await auth.signInWithEmailAndPassword(this.email, this.password);
-            }
-			} catch (error) {
-				this.errorMessage = error.message;
-			}
+      try {
+        if (this.newUser) {
+          await auth.createUserWithEmailAndPassword(this.email, this.password);
+        } else {
+          await auth.signInWithEmailAndPassword(this.email, this.password);
+        }
+      } catch (error) {
+        this.errorMessage = error.message;
+      }
 
-            
-            this.loading = false;
-        },
+      this.loading = false;
     },
+  },
 };
 </script>

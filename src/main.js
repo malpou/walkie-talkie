@@ -4,11 +4,13 @@ import { firestorePlugin } from 'vuefire'
 import VueRouter from 'vue-router';
 import VueCompositionApi from "@vue/composition-api";
 import Vuetify from 'vuetify';
+import PortalVue from 'portal-vue';
 
 Vue.use(firestorePlugin);
 Vue.use(VueRouter);
 Vue.use(VueCompositionApi);
 Vue.use(Vuetify);
+Vue.use(PortalVue);
 
 import Home from './components/Home'
 import ChatRoom from './components/ChatRoom'
